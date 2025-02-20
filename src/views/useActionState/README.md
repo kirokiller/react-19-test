@@ -11,11 +11,10 @@ export function useActionState<State, Payload>(
   initialState: Awaited<State>,
   permalink?: string
 ): [state: Awaited<State>, dispatch: (payload: Payload) => void, isPending: boolean];
+// state: 状态值
+// action: dispatch 更新函数
+// initialState: 初始值
 ```
-
-state: 状态值
-action: dispatch 更新函数
-initialState: 初始值
 
 ```tsx
 import { startTransition, useActionState, useState } from "react";
@@ -48,7 +47,7 @@ export function UpdateName() {
       直接调用submitAction将导致错误提示：
       An async function was passed to useActionState, but it was dispatched outside of an action context. This is likely not what you intended. Either pass the dispatch function to an action prop, or dispatch manually inside startTransition
 
-      React 19 将<form> 与 Actions 集成，from 的提交被视为action
+      React 19 将<form> 与 Actions 集成，from 的提交被视为action 所以无此问题
     */
 
     // 使用 startTransition 包裹异步调用

@@ -1,4 +1,5 @@
-import Test from "./views/useDeferredValue/usage1";
+/* 导入需要的使用示例 */
+import Test from "./views/use/usage2";
 
 const App = () => {
   return (
