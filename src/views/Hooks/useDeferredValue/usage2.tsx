@@ -1,5 +1,5 @@
 import { Suspense, useState, useDeferredValue } from "react";
-import SearchResults from "./SearchResults.js";
+import SearchResults from "./SearchResults";
 
 /* 表明内容已过时 */
 export default function App() {

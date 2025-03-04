@@ -1,5 +1,5 @@
 import { use } from "react";
-import { fetchData } from "./data.ts";
+import { fetchData } from "./data";
 
 export default function SearchResults({ query }: { query: string }) {
   if (query === "") {

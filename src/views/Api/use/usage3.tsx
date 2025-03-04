@@ -9,6 +9,7 @@ function fetchMessage(): MessagePromise {
   });
 }
 
+// 处理 rejected Promise
 export default function App() {
   const [messagePromise, setMessagePromise] = useState<MessagePromise | null>(null);
   const [show, setShow] = useState(false);
