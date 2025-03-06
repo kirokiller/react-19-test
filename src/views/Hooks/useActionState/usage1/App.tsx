@@ -1,7 +1,7 @@
 import { useActionState } from "react";
 import { addToCart } from "./actions.js";
 
-// Display information after submitting a form (Dispaly form errors)
+// 展示表单错误
 export default function App() {
   return (
     <>

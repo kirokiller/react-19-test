@@ -1,31 +1,6 @@
-<!-- 这是一个服务端 用的 表单 hooks -->
-
-# useActionState
-
-`useActionState` is a Hook that allows you to update state based on the result of a form action.
-
-```
-const [state, formAction, isPending] = useActionState(fn, initialState, permalink?);
-```
-
-### Note
-
-In earlier React Canary versions, this API was part of React DOM and called `useFormState`.
-
-- Reference
-  - [`useActionState(action, initialState, permalink?)`](https://react.dev/reference/react/useActionState#useactionstate)
-- Usage
-  - [Using information returned by a form action](https://react.dev/reference/react/useActionState#using-information-returned-by-a-form-action)
-- Troubleshooting
-  - [My action can no longer read the submitted form data](https://react.dev/reference/react/useActionState#my-action-can-no-longer-read-the-submitted-form-data)
-
----
-
-## Reference
-
 ### `useActionState(action, initialState, permalink?)`
 
-Call `useActionState` at the top level of your component to create component state that is updated [when a form action is invoked](https://react.dev/reference/react-dom/components/form). You pass `useActionState` an existing form action function as well as an initial state, and it returns a new action that you use in your form, along with the latest form state and whether the Action is still pending. The latest form state is also passed to the function that you provided.
+在组件的顶层调用 `useActionState` 即可创建一个随 [表单动作被调用](https://zh-hans.react.dev/reference/react-dom/components/form) 而更新的 state。在调用 `useActionState` 时在参数中传入现有的表单动作函数以及一个初始状态，无论 Action 是否在 pending 中，它都会返回一个新的 action 函数和一个 form state 以供在 form 中使用。这个新的 form state 也会作为参数传入提供的表单动作函数。
 
 ```
 import { useActionState } from "react";
@@ -50,7 +25,7 @@ function StatefulForm({}) {
 
       {state}
 
-      <button formAction={formAction}>Increment</button>
+      <button formAction={formAction}>+1</button>
 
     </form>
 
@@ -59,98 +34,27 @@ function StatefulForm({}) {
 }
 ```
 
-The form state is the value returned by the action when the form was last submitted. If the form has not yet been submitted, it is the initial state that you pass.
+form state 是一个只在表单被提交触发 action 后才会被更新的值。如果该表单没有被提交，该值会保持传入的初始值不变。
 
-If used with a Server Function, `useActionState` allows the server’s response from submitting the form to be shown even before hydration has completed.
+如果与服务器函数一起使用，`useActionState` 允许与表单交互的服务器的返回值在激活完成前显示。
 
-[See more examples below.](https://react.dev/reference/react/useActionState#usage)
+[请参阅下方更多示例](https://zh-hans.react.dev/reference/react/useActionState#usage)。
 
-#### Parameters
+#### 参数
 
-- `fn`: The function to be called when the form is submitted or button pressed. When the function is called, it will receive the previous state of the form (initially the `initialState` that you pass, subsequently its previous return value) as its initial argument, followed by the arguments that a form action normally receives.
-- `initialState`: The value you want the state to be initially. It can be any serializable value. This argument is ignored after the action is first invoked.
-- **optional** `permalink`: A string containing the unique page URL that this form modifies. For use on pages with dynamic content (eg: feeds) in conjunction with progressive enhancement: if `fn` is a [server function](https://react.dev/reference/rsc/server-functions) and the form is submitted before the JavaScript bundle loads, the browser will navigate to the specified permalink URL, rather than the current page’s URL. Ensure that the same form component is rendered on the destination page (including the same action `fn` and `permalink`) so that React knows how to pass the state through. Once the form has been hydrated, this parameter has no effect.
+- `fn`：当按钮被按下或者表单被提交时触发的函数。当函数被调用时，该函数会接收到表单的上一个 state（初始值为传入的 `initialState` 参数，否则为上一次执行完该函数的结果）作为函数的第一个参数，余下参数为普通表单动作接到的参数。
+- `initialState`：state 的初始值。任何可序列化的值都可接收。当 action 被调用一次后该参数会被忽略。
+- **可选的** `permalink`: A string containing the unique page URL that this form modifies. For use on pages with dynamic content (eg: feeds) in conjunction with progressive enhancement: if `fn` is a [server function](https://zh-hans.react.dev/reference/rsc/server-functions) and the form is submitted before the JavaScript bundle loads, the browser will navigate to the specified permalink URL, rather than the current page’s URL. Ensure that the same form component is rendered on the destination page (including the same action `fn` and `permalink`) so that React knows how to pass the state through. Once the form has been hydrated, this parameter has no effect.
 
-#### Returns
+#### 返回值
 
-`useActionState` returns an array with the following values:
+`useActionState` 返回一个包含以下值的数组：
 
-1. The current state. During the first render, it will match the `initialState` you have passed. After the action is invoked, it will match the value returned by the action.
-2. A new action that you can pass as the `action` prop to your `form` component or `formAction` prop to any `button` component within the form. The action can also be called manually within [`startTransition`](https://react.dev/reference/react/startTransition).
-3. The `isPending` flag that tells you whether there is a pending Transition.
+1. 当前的 state。第一次渲染期间，该值为传入的 `initialState` 参数值。在 action 被调用后该值会变为 action 的返回值。
+2. 一个新的 action 函数用于在你的 `form` 组件的 `action` 参数或表单中任意一个 `button` 组件的 `formAction` 参数中传递。这个 action 也可以手动在 [`startTransition`](https://zh-hans.react.dev/reference/react/startTransition) 中调用。
+3. 一个 `isPending` 标识，用于表明是否有正在 pending 的 Transition。
 
-#### Caveats
+#### 注意
 
-- When used with a framework that supports React Server Components, `useActionState` lets you make forms interactive before JavaScript has executed on the client. When used without Server Components, it is equivalent to component local state.
-- The function passed to `useActionState` receives an extra argument, the previous or initial state, as its first argument. This makes its signature different than if it were used directly as a form action without using `useActionState`.
-
-原型
-
-```typescript
-export function useActionState<State>(
-  action: (state: Awaited<State>) => State | Promise<State>,
-  initialState: Awaited<State>,
-  permalink?: string
-): [state: Awaited<State>, dispatch: () => void, isPending: boolean];
-export function useActionState<State, Payload>(
-  action: (state: Awaited<State>, payload: Payload) => State | Promise<State>,
-  initialState: Awaited<State>,
-  permalink?: string
-): [state: Awaited<State>, dispatch: (payload: Payload) => void, isPending: boolean];
-// state: 状态值
-// action: dispatch 更新函数
-// initialState: 初始值
-```
-
-```tsx
-import { startTransition, useActionState, useState } from "react";
-
-async function updateNameApi(name: string): Promise<string | null> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve("success set name:" + name);
-    }, 1000);
-  });
-}
-
-// Using pending state from Actions
-export function UpdateName() {
-  const [error, submitAction, isPending] = useActionState<string | null, string>(
-    async (previousState, newName) => {
-      const error = await updateNameApi(newName);
-      if (error) {
-        return error;
-      }
-      return null;
-    },
-    // initialState
-    null
-  );
-  const [name, setName] = useState("");
-
-  const handleClick = () => {
-    /**
-      直接调用submitAction将导致错误提示：
-      An async function was passed to useActionState, but it was dispatched outside of an action context. This is likely not what you intended. Either pass the dispatch function to an action prop, or dispatch manually inside startTransition
-
-      React 19 将<form> 与 Actions 集成，from 的提交被视为action 所以无此问题
-    */
-
-    // 使用 startTransition 包裹异步调用
-    startTransition(() => {
-      submitAction(name);
-    });
-  };
-
-  return (
-    <div>
-      <input value={name} onChange={(event) => setName(event.target.value)} />
-      <button onClick={handleClick} disabled={isPending}>
-        Update
-      </button>
-      <p>loading: {isPending ? "true" : "false"}</p>
-      {error && <p>{error}</p>}
-    </div>
-  );
-}
-```
+- 在支持 React 服务器组件的框架中使用该功能时，`useActionState` 允许表单在服务器渲染阶段时获得部分交互性。当不使用服务器组件时，它的特性与本地 state 相同。
+- 与直接通过表单动作调用的函数不同，传入 `useActionState` 的函数被调用时，会多传入一个代表 state 的上一个值或初始值的参数作为该函数的第一个参数。

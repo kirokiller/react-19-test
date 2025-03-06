@@ -2,7 +2,7 @@ import { useActionState } from "react";
 import { addToCart } from "./actions2";
 import "./styles.css";
 
-// Display information after submitting a form (Dispaly structured information after submitting form)
+// 提交表单后展示结构性数据
 function AddToCartForm({ itemID, itemTitle }: { itemID: string; itemTitle: string }) {
   const [formState, formAction] = useActionState(addToCart, {});
   return (
